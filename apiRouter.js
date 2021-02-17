@@ -1,6 +1,5 @@
 //imports
 var express = require('express');
-var usersCtrl = require('./routes/usersCtrl');
 var levelsCtrl = require('./routes/levelsCtrl');
 var wordsCtrl = require('./routes/wordsCtrl');
 var definitionsCtrl = require('./routes/definitionsCtrl');
@@ -9,14 +8,6 @@ var examplesCtrl = require('./routes/examplesCtrl');
 //router
 exports.router = (function(){
     var apiRouter = express.Router();
-
-    //Users routes
-    apiRouter.route('/users/register/').post(usersCtrl.register);
-    apiRouter.route('/users/login/').post(usersCtrl.login);
-    //apiRouter.route('/users/me/').get(usersCtrl.getUserProfile);
-    //apiRouter.route('/users/').getAll(usersCtrl.getUserProfile);
-    //apiRouter.route('/users/delete/').get(usersCtrl.getUserProfile);
-    //apiRouter.route('/users/update/').put(usersCtrl.updateUserProfile);
 
     //Levels routes
     apiRouter.route('/levels/:id').get(levelsCtrl.getLevel);
