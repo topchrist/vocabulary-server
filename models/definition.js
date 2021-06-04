@@ -20,13 +20,15 @@ module.exports = (sequelize, DataTypes) => {
 
       Definition.hasMany(models.Example, {
         onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        onUpdate: 'CASCADE',
+        foreignKey: {
+          name: 'idDefinition'
+        }
       });
 
     }
   };
   Definition.init({
-    nature: DataTypes.STRING,
     description: DataTypes.STRING,
     idWord: DataTypes.INTEGER
   }, {

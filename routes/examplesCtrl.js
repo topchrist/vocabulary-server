@@ -27,7 +27,7 @@ module.exports ={
         models.Example.findAll()
             .then(examplesFound => res.status(200).json(examplesFound))
             .catch(function(err) {
-                return res.status(500).json({ 'error': 'unable to get example\'s list' });
+                return res.status(500).json({ 'error': err });
             });
     },
 
@@ -86,9 +86,9 @@ module.exports ={
         //params
         let idExample = req.params.id;
         let statement = req.body.statement?req.body.statement.trim():req.body.statement;
-        let idDefinition = req.body.idDefinition;
+        //let idDefinition = req.body.idDefinition;
 
-        if(idExample == null || statement == null|| idDefinition == null || statement.length == 0){
+        if(idExample == null || statement == null|| statement.length == 0){
             return res.status(400).json({'error':'Missing parameters'});
         }
 
@@ -106,13 +106,13 @@ module.exports ={
                     if (exampleFound) {
                         exampleFound.update({
                             statement : statement,
-                            idDefinition : idDefinition,
+                            //idDefinition : idDefinition,
                         })
                             .then(function(newExample) {
                                 done(newExample);
                             })
                             .catch(function(err) {
-                                return res.status(500).json({ 'error': 'can\'t Update example' });
+                                return res.status(500).json({ 'error': err });
                             });
                     }
                     else {
@@ -147,7 +147,7 @@ module.exports ={
             }
         })
             .then(function() {
-                res.sendStatus(200);
+                res.status(200).json({'statut':'ok'});
             })
             .catch(function(err) {
                 return res.status(500).json({ 'error': 'unable to delete example' });

@@ -19,13 +19,17 @@ module.exports = (sequelize, DataTypes) => {
       });
       Word.hasMany(models.Definition, {
         onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        onUpdate: 'CASCADE',
+        foreignKey: {
+          name: 'idWord'
+        }
       });
 
     }
   };
   Word.init({
     name: DataTypes.STRING,
+    nature: DataTypes.STRING,
     plural: DataTypes.STRING,
     idLevel: DataTypes.INTEGER
   }, {

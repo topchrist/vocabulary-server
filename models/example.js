@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       Example.belongsTo(models.Definition, {
         allowNull: false,
         foreignKey: {
-          name: 'idWord'
+          name: 'idDefinition'
         }
       });
 

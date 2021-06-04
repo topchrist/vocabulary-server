@@ -17,7 +17,7 @@ module.exports ={
         })
         .then(levelFound => res.status(200).json(levelFound))
         .catch(function(err) {
-            return res.status(500).json({ 'error': 'unable to get level' });
+            return res.status(500).json({ 'error': err });
         });
 
     },
@@ -27,46 +27,60 @@ module.exports ={
         models.Level.findAll()
         .then(levelsFound => res.status(200).json(levelsFound))
         .catch(function(err) {
-            return res.status(500).json({ 'error': 'unable to get level\'s list' });
+            return res.status(500).json({ 'error': err });
         });
     },
 
     createLevel : function (req, res) {
         //params
-        let level = req.body.level?req.body.level.trim():req.body.level;
+        let order = req.body.order;
+        let name = req.body.name?req.body.name.trim():req.body.name;
         let description = req.body.description;
 
-        if(level == null || level.length == 0){
-            return res.status(400).json({'error':'Level\'s name is require'});
+        if(name == null || name.length == 0 || order == null){
+            return res.status(400).json({'error':'name and order are require'});
         }
         asyncLib.waterfall([
             function(done) {
                 models.Level.findOne({
-                    attributes: ['level'],
-                    where: { level : level }
+                    attributes: ['name'],
+                    where: { name : name }
                 })
                     .then(function(levelFound) {
                         done(null, levelFound);
                     })
                     .catch(function(err) {
-                        return res.status(500).json({ 'error': err.message });
+                        return res.status(500).json({ 'error': err });
                     });
             },
             function(levelFound, done) {
                 if (!levelFound) {
+
+                    /* models.Level.findOne({
+                        attributes: ['order'],
+                        where: { order : order }
+                    }).then(function(levelOrder) {
+                            done(null, levelFound);
+                        })
+                        .catch(function(err) {
+                            return res.status(500).json({ 'error': err });
+                        }); */
+
+
                     let newLevel = models.Level.create({
-                        level : level,
+                        order : order,
+                        name : name,
                         description : description
                     })
                         .then(function(newLevel) {
                             done(newLevel);
                         })
                         .catch(function(err) {
-                            return res.status(500).json({ 'error': 'cannot add level' });
+                            return res.status(500).json({ 'error': err });
                         });
                 }
                 else {
-                    return res.status(409).json({ 'error': "A level with the nane '" +level+"' already exist"});
+                    return res.status(409).json({ 'error': "A level with the nane '" +name+"' already exist"});
                 }
             }
             ],
@@ -74,7 +88,7 @@ module.exports ={
                 if (newLevel) {
                     return res.status(201).json(newLevel);
                 } else {
-                    return res.status(500).json({ 'error': 'cannot add level' });
+                    return res.status(500).json({ 'error': err });
                 }
             }
         );
@@ -83,11 +97,12 @@ module.exports ={
     updateLevel : function (req, res) {
         //params
         let idLevel = req.params.id;
-        let level = req.body.level?req.body.level.trim():req.body.level;
+        let order = req.body.order;
+        let name = req.body.name?req.body.name.trim():req.body.name;
         let description = req.body.description;
 
-        if(level == null || level.trim().length == 0){
-            return res.status(400).json({'error':'Level\'s name is require'});
+        if(name == null || name.length == 0 || order == null){
+            return res.status(400).json({'error':'name and order are require'});
         }
         asyncLib.waterfall([
                 function(done) {
@@ -102,7 +117,8 @@ module.exports ={
                 function(levelFound, done) {
                     if (levelFound) {
                         levelFound.update({
-                            level : level,
+                            order : order,
+                            name : name,
                             description : description
                         })
                             .then(function(newLevel) {
@@ -113,7 +129,7 @@ module.exports ={
                             });
                     }
                     else {
-                        return res.status(409).json({ 'error': "A level with the nane '" +level+"' don't exist"});
+                        return res.status(409).json({ 'error': "A level with this key don't exist"});
                     }
                 }
             ],
@@ -144,7 +160,7 @@ module.exports ={
             }
         })
             .then(function() {
-                res.sendStatus(200);
+                res.status(200).json({'statut':'ok'});
             })
             .catch(function(err) {
                 return res.status(500).json({ 'error': 'unable to delete level' });

@@ -7,13 +7,11 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
-      },
-      nature: {
-        type: Sequelize.STRING
-      },
+      },     
       description: {
+        allowNull: false,
         type: Sequelize.STRING
-      },
+      },     
       idWord: {
         allowNull: false,
         type: Sequelize.INTEGER,

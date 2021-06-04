@@ -13,13 +13,17 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Level.hasMany(models.Word, {
         onDelete: 'RESTRICT',
-        onUpdate: 'CASCADE'
+        onUpdate: 'CASCADE',
+        foreignKey: {
+          name: 'idLevel'
+        }
       });
 
     }
   };
   Level.init({
-    level: DataTypes.STRING,
+    order:DataTypes.INTEGER,
+    name: DataTypes.STRING,
     description: DataTypes.STRING
   }, {
     sequelize,

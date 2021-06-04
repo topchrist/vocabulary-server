@@ -13,11 +13,35 @@ module.exports ={
         }
 
         models.Word.findOne({
+            include: {
+                model: models.Definition,
+                include: {
+                    model: models.Example
+                }               
+            },
             where: { id: idWord }
         })
             .then(wordFound => res.status(200).json(wordFound))
             .catch(function(err) {
-                return res.status(500).json({ 'error': 'unable to get word' });
+                return res.status(500).json({ 'error': err });
+            });
+
+    },
+
+    getListWordByLevel : function (req, res) {
+        //params
+        let idLevel = req.params.idLevel;
+
+        if(idLevel == null){
+            return res.status(400).json({'error':'Missing parameter'});
+        }
+
+        models.Word.findAll({
+            where: { idLevel: idLevel }
+        })
+            .then(wordFound => res.status(200).json(wordFound))
+            .catch(function(err) {
+                return res.status(500).json({ 'error': err });
             });
 
     },
@@ -27,24 +51,28 @@ module.exports ={
         models.Word.findAll()
             .then(wordsFound => res.status(200).json(wordsFound))
             .catch(function(err) {
-                return res.status(500).json({ 'error': 'unable to get word\'s list' });
+                return res.status(500).json({ 'error': err });
             });
     },
 
     createWord : function (req, res) {
         //params
         let name = req.body.name?req.body.name.trim():req.body.name;
+        let nature = req.body.nature?req.body.nature.trim():req.body.nature;
         let plural = req.body.plural?req.body.plural.trim():req.body.plural;
         let idLevel = req.body.idLevel;
 
-        if(name == null || plural == null || idLevel == null || name.length == 0 || plural.length == 0){
+        if(nature == null || name == null || idLevel == null || name.length == 0 || name.length == 0){
             return res.status(400).json({'error':'Missing parameters'});
         }
         asyncLib.waterfall([
                 function(done) {
                     models.Word.findOne({
                         attributes: ['name'],
-                        where: { name : name }
+                        where: { 
+                            name : name,
+                            nature : nature,
+                         }
                     })
                         .then(function(wordFound) {
                             done(null, wordFound);
@@ -57,6 +85,7 @@ module.exports ={
                     if (!wordFound) {
                         models.Word.create({
                             name : name,
+                            nature : nature,
                             plural : plural,
                             idLevel : idLevel
                         })
@@ -85,11 +114,12 @@ module.exports ={
     updateWord : function (req, res) {
         //params
         let name = req.body.name?req.body.name.trim():req.body.name;
+        let nature = req.body.nature?req.body.nature.trim():req.body.nature;
         let plural = req.body.plural?req.body.plural.trim():req.body.plural;
         let idLevel = req.body.idLevel;
         let idWord = req.params.id;
 
-        if(idLevel == null || name == null || plural == null || idLevel == null || name.length == 0 || plural.length == 0){
+        if(nature == null || idWord == null || name == null || idLevel == null || name.length == 0 || name.length == 0){
             return res.status(400).json({'error':'Missing parameters'});
         }
 
@@ -107,6 +137,7 @@ module.exports ={
                     if (wordFound) {
                         wordFound.update({
                             name : name,
+                            nature : nature,
                             plural : plural,
                             idLevel : idLevel
                         })
@@ -149,7 +180,7 @@ module.exports ={
             }
         })
             .then(function() {
-                res.sendStatus(200);
+                res.status(200).json({'statut':'ok'});
             })
             .catch(function(err) {
                 return res.status(500).json({ 'error': 'unable to delete word' });

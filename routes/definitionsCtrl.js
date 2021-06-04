@@ -33,18 +33,16 @@ module.exports ={
 
     createDefinition : function (req, res) {
         //params
-        let nature = req.body.nature?req.body.nature.trim():req.body.nature;
         let description = req.body.description?req.body.description.trim():req.body.description;
         let idWord = req.body.idWord;
 
-        if(nature == null || description == null || idWord == null || nature.length == 0 || description.length == 0){
+        if(description == null || idWord == null || description.length == 0){
             return res.status(400).json({'error':'Missing parameters'});
         }
         asyncLib.waterfall([
                 function(done) {
                     models.Definition.findOne({
                         where: {
-                            nature : nature,
                             description : description,
                             idWord : idWord,
                         }
@@ -59,7 +57,6 @@ module.exports ={
                 function(definitionFound, done) {
                     if (!definitionFound) {
                         models.Definition.create({
-                            nature : nature,
                             description : description,
                             idWord : idWord,
                         })
@@ -88,11 +85,9 @@ module.exports ={
     updateDefinition : function (req, res) {
         //params
         let idDefinition = req.params.id;
-        let nature = req.body.nature?req.body.nature.trim():req.body.nature;
         let description = req.body.description?req.body.description.trim():req.body.description;
-        let idWord = req.body.idWord;
 
-        if(idDefinition == null || nature == null || description == null || idWord == null || nature.length == 0 || description.length == 0){
+        if(idDefinition == null || description == null || description.length == 0){
             return res.status(400).json({'error':'Missing parameters'});
         }
 
@@ -109,15 +104,13 @@ module.exports ={
                 function(definitionFound, done) {
                     if (definitionFound) {
                         definitionFound.update({
-                            nature : nature,
                             description : description,
-                            idWord : idWord,
                         })
                             .then(function(newDefinition) {
                                 done(newDefinition);
                             })
                             .catch(function(err) {
-                                return res.status(500).json({ 'error': 'can\'t Update definition' });
+                                return res.status(500).json({ 'error': err });
                             });
                     }
                     else {
@@ -152,7 +145,7 @@ module.exports ={
             }
         })
             .then(function() {
-                res.sendStatus(200);
+                res.status(200).json({'statut':'ok'});
             })
             .catch(function(err) {
                 return res.status(500).json({ 'error': 'unable to delete definition' });

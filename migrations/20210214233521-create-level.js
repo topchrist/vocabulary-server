@@ -8,7 +8,14 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      level: {
+      order: {
+        allowNull: false,
+        unique: true,
+        type: Sequelize.INTEGER
+      },
+      name: {
+        allowNull: false,
+        unique: true,
         type: Sequelize.STRING
       },
       description: {

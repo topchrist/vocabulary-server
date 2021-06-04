@@ -17,11 +17,12 @@ exports.router = (function(){
     apiRouter.route('/levels/:id').delete(levelsCtrl.deleteLevel);
 
     //Words routes
-    apiRouter.route('/words/:id').get(wordsCtrl.getWord);
+    apiRouter.route('/word/:id').get(wordsCtrl.getWord);
+    apiRouter.route('/words/:idLevel').get(wordsCtrl.getListWordByLevel);
     apiRouter.route('/words/').get(wordsCtrl.getAllWords);
-    apiRouter.route('/words/').post(wordsCtrl.createWord);
-    apiRouter.route('/words/:id').put(wordsCtrl.updateWord);
-    apiRouter.route('/words/:id').delete(wordsCtrl.deleteWord);
+    apiRouter.route('/word/').post(wordsCtrl.createWord);
+    apiRouter.route('/word/:id').put(wordsCtrl.updateWord);
+    apiRouter.route('/word/:id').delete(wordsCtrl.deleteWord);
 
     //Definitions routes
     apiRouter.route('/definitions/:id').get(definitionsCtrl.getDefinition);
